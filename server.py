@@ -31,7 +31,7 @@ def main():
                 errors="ignore"
             )
 
-            print("=================================")
+            print("---------------------------------------")
             print("Client:", client_address)
             print(request)
 
