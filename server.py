@@ -1,13 +1,11 @@
 import socket
 
-
-HOST = "127.0.0.1"
+HOST = "localhost"
 PORT = 8080
 
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     server_socket.bind((HOST, PORT))
@@ -24,13 +22,13 @@ def main():
                 errors="ignore"
             )
 
-            print("---------------------------------------")
+            print("--------------------------------")
             print("Client:", client_address)
             print(request)
 
-            request_lines = request.splitlines()
-
             path = "/"
+
+            request_lines = request.splitlines()
 
             if request_lines:
                 parts = request_lines[0].split()
@@ -38,26 +36,40 @@ def main():
                 if len(parts) >= 2:
                     path = parts[1]
 
+            # Routing
             if path == "/":
                 filename = "index.html"
+
             elif path.startswith("/") and path.endswith(".html"):
                 filename = path[1:]
+
             else:
                 filename = None
 
+            # Serve file
             if filename:
                 try:
                     with open(filename, "r", encoding="utf-8") as file:
                         html_content = file.read()
 
-                    response = "HTTP/1.0 200 OK\n\n" + html_content
+                    response = (
+                        "HTTP/1.0 200 OK\n\n"
+                        + html_content
+                    )
 
                 except FileNotFoundError:
-                    response = "HTTP/1.0 404 NOT FOUND\n\n"
-            else:
-                response = "HTTP/1.0 404 NOT FOUND\n\n"
+                    response = (
+                        "HTTP/1.0 404 NOT FOUND\n\n"
+                        "<h1>404 Not Found</h1>"
+                    )
 
-            client_socket.sendall(response.encode())
+            else:
+                response = (
+                    "HTTP/1.0 404 NOT FOUND\n\n"
+                    "<h1>404 Not Found</h1>"
+                )
+
+            client_socket.sendall(response.encode("utf-8"))
 
         except Exception as e:
             print("Error:", e)
