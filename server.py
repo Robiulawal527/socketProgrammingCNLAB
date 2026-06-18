@@ -43,12 +43,12 @@ def main():
                 if len(parts) >= 2:
                     path = parts[1]
 
-            # IGNORE favicon completely (no terminal output)
+            # ignoring fevicon requ
             if path == "/favicon.ico":
                 client_socket.close()
                 continue
 
-            # PRINT ONLY REAL REQUESTS
+            # printing only real requests (not favicon)
             print("\n--- REQUEST ---")
             print(addr)
             print(path)
@@ -61,7 +61,7 @@ def main():
             else:
                 file_name = None
 
-            # response handling
+            # the  response handling
             if file_name:
                 try:
                     with open(file_name, "r", encoding="utf-8") as f:
