@@ -15,13 +15,6 @@ def main():
 
     print(f"Server running at http://{HOST}:{PORT}")
 
-    file_map = {
-        "/": "index.html",
-        "/index.html": "index.html",
-        "/about.html": "about.html",
-        "/contact.html": "contact.html"
-    }
-
     while True:
         client_socket, client_address = server_socket.accept()
 
@@ -45,38 +38,24 @@ def main():
                 if len(parts) >= 2:
                     path = parts[1]
 
-            if path in file_map:
+            if path == "/":
+                filename = "index.html"
+            elif path.startswith("/") and path.endswith(".html"):
+                filename = path[1:]
+            else:
+                filename = None
 
-                filename = file_map[path]
-
+            if filename:
                 try:
                     with open(filename, "r", encoding="utf-8") as file:
                         html_content = file.read()
 
-                    response = (
-                        "HTTP/1.0 200 OK\r\n"
-                        "Content-Type: text/html\r\n"
-                        "\r\n"
-                        + html_content
-                    )
+                    response = "HTTP/1.0 200 OK\n\n" + html_content
 
                 except FileNotFoundError:
-
-                    response = (
-                        "HTTP/1.0 404 NOT FOUND\r\n"
-                        "Content-Type: text/html\r\n"
-                        "\r\n"
-                        "<h1>404 NOT FOUND</h1>"
-                    )
-
+                    response = "HTTP/1.0 404 NOT FOUND\n\n"
             else:
-
-                response = (
-                    "HTTP/1.0 404 NOT FOUND\r\n"
-                    "Content-Type: text/html\r\n"
-                    "\r\n"
-                    "<h1>404 NOT FOUND</h1>"
-                )
+                response = "HTTP/1.0 404 NOT FOUND\n\n"
 
             client_socket.sendall(response.encode())
 
