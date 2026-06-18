@@ -22,7 +22,7 @@ def main():
                 errors="ignore"
             )
 
-            print("--------------------------------")
+            print("--------------------------------------------------------------")
             print("Client:", client_address)
             print(request)
 
@@ -57,17 +57,26 @@ def main():
                         + html_content
                     )
 
+                    print("Response Sent:")
+                    print("HTTP/1.0 200 OK\\n\\n")
+
                 except FileNotFoundError:
                     response = (
                         "HTTP/1.0 404 NOT FOUND\n\n"
                         "<h1>404 Not Found</h1>"
                     )
 
+                    print("Response Sent:")
+                    print("HTTP/1.0 404 NOT FOUND\\n\\n")
+
             else:
                 response = (
                     "HTTP/1.0 404 NOT FOUND\n\n"
                     "<h1>404 Not Found</h1>"
                 )
+
+                print("Response Sent:")
+                print("HTTP/1.0 404 NOT FOUND\\n\\n")
 
             client_socket.sendall(response.encode("utf-8"))
 
