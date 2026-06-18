@@ -1,6 +1,6 @@
 import socket
 
-HOST = "localhost"
+HOST = "127.0.0.1"
 PORT = 8080
 
 
@@ -17,66 +17,63 @@ def main():
         client_socket, client_address = server_socket.accept()
 
         try:
-            request = client_socket.recv(1024).decode(
-                "utf-8",
-                errors="ignore"
-            )
+            request = client_socket.recv(1024).decode("utf-8", errors="ignore")
 
-            print("--------------------------------------------------------------")
+            print("------------------------------------")
             print("Client:", client_address)
             print(request)
 
+            # default route
             path = "/"
 
-            request_lines = request.splitlines()
-
-            if request_lines:
-                parts = request_lines[0].split()
-
+            lines = request.splitlines()
+            if lines:
+                parts = lines[0].split()
                 if len(parts) >= 2:
                     path = parts[1]
 
-            # Routing
+            # routing
             if path == "/":
                 filename = "index.html"
-
             elif path.startswith("/") and path.endswith(".html"):
                 filename = path[1:]
-
             else:
                 filename = None
 
-            # Serve file
+            # serve file
             if filename:
                 try:
-                    with open(filename, "r", encoding="utf-8") as file:
-                        html_content = file.read()
+                    with open(filename, "r", encoding="utf-8") as f:
+                        html_content = f.read()
 
                     response = (
-                        "HTTP/1.0 200 OK\n\n"
+                        "HTTP/1.0 200 OK\r\n"
+                        "Content-Type: text/html; charset=utf-8\r\n"
+                        "\r\n"
                         + html_content
                     )
 
-                    print("Response Sent:")
-                    print("HTTP/1.0 200 OK\\n\\n")
+                    print("Response Sent: HTTP/1.0 200 OK\\n\\n")
 
                 except FileNotFoundError:
                     response = (
-                        "HTTP/1.0 404 NOT FOUND\n\n"
-                        "<h1>404 Not Found</h1>"
+                        "HTTP/1.0 404 NOT FOUND\r\n"
+                        "Content-Type: text/html; charset=utf-8\r\n"
+                        "\r\n"
+                        "<h1>404 NOT FOUND</h1>"
                     )
 
-                    print("Response Sent:")
-                    print("HTTP/1.0 404 NOT FOUND\\n\\n")
+                    print("Response Sent: HTTP/1.0 404 NOT FOUND\\n\\n")
 
             else:
                 response = (
-                    "HTTP/1.0 404 NOT FOUND\n\n"
-                    "<h1>404 Not Found</h1>"
+                    "HTTP/1.0 404 NOT FOUND\r\n"
+                    "Content-Type: text/html; charset=utf-8\r\n"
+                    "\r\n"
+                    "<h1>404 NOT FOUND</h1>"
                 )
 
-                print("Response Sent:")
-                print("HTTP/1.0 404 NOT FOUND\\n\\n")
+                print("Response Sent: HTTP/1.0 404 NOT FOUND\\n\\n")
 
             client_socket.sendall(response.encode("utf-8"))
 
