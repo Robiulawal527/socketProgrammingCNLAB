@@ -69,7 +69,7 @@ def main():
 
                     response = build_response("HTTP/1.0 200 OK", html)
 
-                    print("Response: 200 OK")
+                    print("Response:HTTP/1.0 200 OK")
 
                 except FileNotFoundError:
                     response = build_response(
@@ -77,7 +77,7 @@ def main():
                         "<h1>404 NOT FOUND</h1>"
                     )
 
-                    print("Response: 404 NOT FOUND")
+                    print("Response:HTTP/1.0 404 NOT FOUND")
 
             else:
                 response = build_response(
@@ -85,7 +85,7 @@ def main():
                     "<h1>404 NOT FOUND</h1>"
                 )
 
-                print("Response: 404 NOT FOUND")
+                print("Response:HTTP/1.0 404 NOT FOUND")
 
             client_socket.sendall(response)
 
